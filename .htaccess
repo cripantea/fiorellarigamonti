@@ -1,0 +1,16 @@
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Se viene richiesto un URL "pulito" (es. /contatti, come indicizzato da Google
+  # sul sito originale Hostinger) e non esiste un file/cartella con quel nome,
+  # servi internamente il file .html corrispondente senza cambiare l'URL visibile.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^([^.]+)$ $1.html [L]
+</IfModule>
+
+# Pagina 404 personalizzata (se presente); altrimenti rimuovere questa riga
+# ErrorDocument 404 /404.html
