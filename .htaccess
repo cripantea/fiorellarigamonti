@@ -14,3 +14,11 @@ DirectoryIndex index.html
 
 # Pagina 404 personalizzata (se presente); altrimenti rimuovere questa riga
 # ErrorDocument 404 /404.html
+
+# Le pagine HTML vanno sempre ricontrollate col server, cosi' le modifiche
+# (e i nuovi nomi dei file JS) arrivano subito ai visitatori.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
