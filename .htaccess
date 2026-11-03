@@ -3,6 +3,19 @@ DirectoryIndex index.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # Un solo dominio: fiorellarigamonti.it -> www (come sitemap e canonical).
+  # new.fiorellarigamonti.com resta com'e' (staging).
+  RewriteCond %{HTTP_HOST} ^fiorellarigamonti\.it$ [NC]
+  RewriteRule ^(.*)$ https://www.fiorellarigamonti.it/$1 [R=301,L]
+
+  # Vecchi URL del sito Hostinger con prefisso lingua: /it, /it/contatti -> /, /contatti
+  RewriteRule ^it/?$ / [R=301,L]
+  RewriteRule ^it/(.+)$ /$1 [R=301,L]
+
+  # Slash finale su pagine che non sono cartelle: /contatti/ -> /contatti
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)/$ /$1 [R=301,L]
+
   # Se viene richiesto un URL "pulito" (es. /contatti, come indicizzato da Google
   # sul sito originale Hostinger) e non esiste un file/cartella con quel nome,
   # servi internamente il file .html corrispondente senza cambiare l'URL visibile.
@@ -12,13 +25,15 @@ DirectoryIndex index.html
   RewriteRule ^([^.]+)$ $1.html [L]
 </IfModule>
 
-# Pagina 404 personalizzata (se presente); altrimenti rimuovere questa riga
-# ErrorDocument 404 /404.html
+ErrorDocument 404 /404.html
 
 # Le pagine HTML vanno sempre ricontrollate col server, cosi' le modifiche
 # (e i nuovi nomi dei file JS) arrivano subito ai visitatori.
 <IfModule mod_headers.c>
   <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(css|js)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
 </IfModule>
